@@ -81,4 +81,3 @@ Key slicing dimensions include:
 
 The Gold model is consumed by Power BI for DAX calculations, interactive filtering, KPI cards, trend analysis, and drill-down reporting.
 
-> **Modeling note:** The exact relationship direction and cardinality should remain aligned with the final Power BI semantic model.
