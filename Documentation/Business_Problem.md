@@ -27,5 +27,3 @@ The solution connects:
 **Revenue → Customers → Product Engagement → Support → Churn**
 
 This allows business users to investigate performance by plan, geography, industry, customer segment, feature, support priority, and customer journey.
-
-> **Note:** The dataset is synthetic and contains no PII. Numerical business conclusions should be taken from the final published Power BI report rather than inferred from the documentation.
