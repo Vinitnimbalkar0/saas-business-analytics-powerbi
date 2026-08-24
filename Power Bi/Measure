@@ -1,0 +1,404 @@
+# DAX Measures
+
+## RavenStack SaaS Business Analytics
+
+This document contains the key DAX measures used in the Power BI semantic model.
+
+The measures are organized according to the major business areas of the project:
+
+- Revenue & Subscription
+- Customer & Churn
+- Product Usage
+- Customer Support
+- Executive KPIs
+
+---
+
+# 1. Executive KPIs
+
+## Active Customers
+
+```DAX
+Active Customers =
+CALCULATE(
+    [Total Customers],
+    dim_accounts[customer_status] = "Active"
+)
+
+Business Definition:
+Number of customers currently classified as active.
+
+Business Question:
+How many customers are currently active?
+
+Dashboard Usage:
+Executive Overview.
+
+Total Customers
+Total Customers =
+DISTINCTCOUNT(
+    dim_accounts[account_id]
+)
+
+Business Definition:
+Total number of unique customer accounts.
+
+Churned Customers
+Churned Customers =
+CALCULATE(
+    [Total Customers],
+    dim_accounts[customer_status] = "Churned"
+)
+
+Business Definition:
+Number of customers classified as churned.
+
+2. Revenue Measures
+MRR
+MRR =
+SUM(
+    fact_subscriptions[mrr_amount]
+)
+
+Business Definition:
+Monthly Recurring Revenue generated from subscriptions.
+
+Business Question:
+How much recurring revenue is the business generating each month?
+
+ARR
+ARR =
+SUM(
+    fact_subscriptions[arr_amount]
+)
+
+Business Definition:
+Annual Recurring Revenue generated from subscriptions.
+
+Business Question:
+What is the annualized recurring revenue base?
+
+Average MRR
+Avg MRR =
+AVERAGE(
+    fact_subscriptions[mrr_amount]
+)
+
+Business Definition:
+Average MRR across subscription records.
+
+Average ARR
+Avg ARR =
+AVERAGE(
+    fact_subscriptions[arr_amount]
+)
+
+Business Definition:
+Average ARR across subscription records.
+
+3. Subscription Measures
+Total Subscriptions
+Total Subscription =
+COUNTROWS(
+    fact_subscriptions
+)
+
+Business Definition:
+Total number of subscription records.
+
+Upgrade Count
+Upgrade Count =
+CALCULATE(
+    COUNTROWS(fact_subscriptions),
+    fact_subscriptions[upgrade_flag] = 1
+)
+
+Business Definition:
+Number of subscriptions associated with an upgrade.
+
+Business Question:
+How frequently are customers upgrading?
+
+Downgrade Count
+Downgrade Count =
+CALCULATE(
+    COUNTROWS(fact_subscriptions),
+    fact_subscriptions[downgrade_flag] = 1
+)
+
+Business Definition:
+Number of subscriptions associated with a downgrade.
+
+4. Churn Measures
+Churn Rate
+Churn Rate =
+DIVIDE(
+    [Churned Customers],
+    [Total Customers],
+    0
+)
+
+Business Definition:
+Percentage of customers classified as churned.
+
+Business Question:
+How significant is customer attrition?
+
+Business Importance:
+Churn directly affects recurring revenue and customer lifetime value.
+
+Total Churn Events
+Total Churn Events =
+COUNTROWS(
+    fact_churn
+)
+
+Business Definition:
+Total number of recorded churn events.
+
+Total Refund
+Total Refund =
+SUM(
+    fact_churn[refund_amount_usd]
+)
+
+Business Definition:
+Total refund amount associated with churn events.
+
+Business Question:
+What is the financial impact of churn-related refunds?
+
+5. Product Usage Measures
+Total Usage
+Total Usage =
+SUM(
+    fact_feature_usage[usage_count]
+)
+
+Business Definition:
+Total recorded product feature usage.
+
+Business Question:
+How actively are customers using the product?
+
+Average Usage
+Avg Usage =
+AVERAGE(
+    fact_feature_usage[usage_count]
+)
+
+Business Definition:
+Average feature usage per usage record.
+
+Usage Duration
+Usage Duration =
+SUM(
+    fact_feature_usage[usage_duration_secs]
+)
+
+Business Definition:
+Total recorded feature usage duration in seconds.
+
+Total Errors
+Total Error =
+SUM(
+    fact_feature_usage[error_count]
+)
+
+Business Definition:
+Total number of recorded product errors.
+
+Error Rate
+Error Rate =
+DIVIDE(
+    [Total Error],
+    [Total Usage],
+    0
+)
+
+Business Definition:
+Product errors relative to total recorded usage.
+
+Business Question:
+Is product usage associated with a high level of errors?
+
+6. Customer Support Measures
+Total Tickets
+Total Tickets =
+COUNTROWS(
+    fact_support_tickets
+)
+
+Business Definition:
+Total number of customer support tickets.
+
+Average CSAT
+Average CSAT =
+AVERAGE(
+    fact_support_tickets[satisfaction_score]
+)
+
+Business Definition:
+Average customer satisfaction score.
+
+Business Question:
+How satisfied are customers with support?
+
+Average Resolution Time
+Avg Resolution Time =
+AVERAGE(
+    fact_support_tickets[resolution_time_hours]
+)
+
+Business Definition:
+Average number of hours required to resolve a support ticket.
+
+Average Response Time
+Avg Response Time =
+AVERAGE(
+    fact_support_tickets[first_response_time_minutes]
+)
+
+Business Definition:
+Average time taken to provide the first response to a customer.
+
+Escalation Rate
+Escalation Rate =
+DIVIDE(
+    CALCULATE(
+        COUNTROWS(fact_support_tickets),
+        fact_support_tickets[escalation_flag] = 1
+    ),
+    [Total Tickets],
+    0
+)
+
+Business Definition:
+Percentage of support tickets that were escalated.
+
+Business Question:
+How frequently do customer issues require escalation?
+
+7. KPI Framework
+Business Area	KPI	Business Question
+Executive	Active Customers	How many customers are active?
+Executive	MRR	How much recurring monthly revenue is generated?
+Executive	ARR	What is the annualized recurring revenue?
+Executive	Churn Rate	How significant is customer attrition?
+Executive	Average CSAT	How satisfied are customers?
+Revenue	MRR	How is recurring revenue performing?
+Revenue	ARR	What is the annual revenue base?
+Subscription	Total Subscription	How large is the subscription base?
+Subscription	Upgrade Count	How many upgrades occur?
+Subscription	Downgrade Count	How many downgrades occur?
+Customer	Total Customers	How large is the customer base?
+Customer	Active Customers	How many customers remain active?
+Churn	Churn Rate	What proportion of customers churn?
+Churn	Total Refund	What is the financial impact of churn?
+Product	Total Usage	How actively is the product used?
+Product	Avg Usage	What is the average usage level?
+Product	Usage Duration	How deeply are customers using features?
+Product	Error Rate	How frequently do errors occur?
+Support	Total Tickets	How much support demand exists?
+Support	Average CSAT	How satisfied are customers with support?
+Support	Avg Response Time	How quickly does support respond?
+Support	Avg Resolution Time	How quickly are issues resolved?
+Support	Escalation Rate	How often are tickets escalated?
+8. Business-to-Metric Mapping
+
+The DAX layer is designed around business questions rather than visuals.
+
+Revenue
+Revenue Performance
+        ↓
+MRR
+ARR
+Avg MRR
+Avg ARR
+Customer Retention
+Customer Retention
+        ↓
+Total Customers
+Active Customers
+Churned Customers
+Churn Rate
+Refund
+Product Engagement
+Product Engagement
+        ↓
+Total Usage
+Avg Usage
+Usage Duration
+Total Errors
+Error Rate
+Customer Support
+Support Performance
+        ↓
+Total Tickets
+CSAT
+Response Time
+Resolution Time
+Escalation Rate
+9. Dashboard Mapping
+Dashboard Page	Main Measures
+Executive Overview	Active Customers, MRR, ARR, Churn Rate, Average CSAT
+Revenue & Subscription	MRR, ARR, Avg MRR, Avg ARR, Total Subscription, Upgrade Count, Downgrade Count
+Customer & Churn	Total Customers, Active Customers, Churned Customers, Churn Rate, Activation Rate, Total Refund
+Product Usage	Total Usage, Avg Usage, Usage Duration, Error Rate, Total Error
+Customer Support	Total Tickets, Average CSAT, Avg Resolution Time, Avg Response Time, Escalation Rate
+10. DAX Design Principles
+
+The project follows these principles:
+
+1. Reusable Measures
+
+Business calculations are created as reusable measures rather than repeatedly calculated inside individual visuals.
+
+2. Filter-Aware Analysis
+
+Measures respond dynamically to Power BI slicers and dimensions such as:
+
+Plan
+Region
+Industry
+Customer Segment
+Trial Status
+Date
+Feature
+Support Priority
+3. Safe Ratio Calculations
+
+DIVIDE() is used for percentage and ratio calculations to avoid division-by-zero errors.
+
+4. Business-Oriented KPIs
+
+Measures are designed around business questions rather than technical calculations alone.
+
+11. Business Value of the DAX Layer
+
+The DAX layer converts the Gold data model into a decision-support layer.
+
+Gold Data Model
+      ↓
+DAX Measures
+      ↓
+Business KPIs
+      ↓
+Interactive Power BI
+      ↓
+Business Decisions
+
+The measures allow management to evaluate:
+
+Revenue performance
+Customer retention
+Subscription movement
+Product engagement
+Product quality
+Customer support performance
+
+12. Important Note
+
+DAX measures should always be validated against the final Power BI semantic model before deployment.
+
+The formulas documented here describe the intended KPI logic and should match the final measure definitions used in the .pbix file.
