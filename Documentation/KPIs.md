@@ -73,4 +73,3 @@ Support Performance
 Business Decision
 ```
 
-> **Important:** Final numerical values and business-specific KPI definitions should be taken from the final PBIX report and validated against the implemented DAX measures.
