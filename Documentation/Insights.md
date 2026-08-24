@@ -119,12 +119,4 @@ Support behavior can be used as an additional dimension when investigating reten
 
 ---
 
-## Insight Validation Framework
 
-For each final dashboard insight, document:
-
-1. **Observation** — What changed or differs?
-2. **Segmentation** — Which plan, region, industry, customer segment, feature, or priority is involved?
-3. **Comparison** — How does it compare with another group or period?
-4. **Potential Driver** — What additional evidence could validate the cause?
-5. **Business Impact** — Why does the finding matter?
